@@ -1,0 +1,11 @@
+#canvasDiv {
+    margin-left: auto;
+    margin-right: auto;
+    width: 900px;
+}
+
+canvas {
+    background-color: blanchedalmond;
+    width: 900px;
+    height: 900px;
+}
