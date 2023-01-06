@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    restart: on-failure
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
+    environment:
+      - APP_PORT=3000
+      - REDIS_URL=redis://redis_db:6379
+    ports:
+      - "80:3000"
+    links:
+      - redis_db
+    depends_on:
+      - redis_db
+    command: npm start
+    # command: npm run debug
+
+  redis_db:
+    image: redis:alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    command: redis-server --save 20 1
+
+volumes:
+  redis_data:
+    driver: local

@@ -1,0 +1,16 @@
+{
+    "name": "docker_web_app",
+    "version": "1.0.0",
+    "description": "...",
+    "author": "Vít Křížka <vit.krizka@gmail.com>",
+    
+    "main": "main.js",
+    "scripts": {
+        "start": "node main.js",
+        "debug": "node --inspect main.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "redis": "^4.5.1"
+    }
+}
