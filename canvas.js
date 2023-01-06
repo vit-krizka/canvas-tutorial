@@ -183,8 +183,8 @@ if (canvas.getContext) {
     canvas.addEventListener("contextmenu", (e) => {
         e.preventDefault();
 
-        let x = e.clientX;
-        let y = e.clientY;
+        let x = getEventLocation(e).x;
+        let y = getEventLocation(e).y;
 
         city.push(new Hexagon(x, y, "purple"));
     })
