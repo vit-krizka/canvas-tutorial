@@ -13,11 +13,12 @@ if (canvas.getContext) {
 
     let offsetX = 0;
     let offsetY = 0;
-    let lastX = null;
-    let lastY = null;
 
+    //původné parametry Hexagonu
     const a = 2 * Math.PI / 6;
     const r = 50;
+
+    //nové parametry Hexu
 
     class Hexagon {
         constructor(x, y, color) {
@@ -93,15 +94,6 @@ if (canvas.getContext) {
         else if (e.clientX && e.clientY) {
             return { x: e.clientX, y: e.clientY }
         }
-    }
-
-    function drawRect(x, y, width, height) {
-        ctx.fillRect(x, y, width, height)
-    }
-
-    function drawText(text, x, y, size, font) {
-        ctx.font = `${size}px ${font}`
-        ctx.fillText(text, x, y)
     }
 
     let isDragging = false
@@ -183,8 +175,8 @@ if (canvas.getContext) {
     canvas.addEventListener("contextmenu", (e) => {
         e.preventDefault();
 
-        let x = getEventLocation(e).x;
-        let y = getEventLocation(e).y;
+        let x = getEventLocation(e).x / cameraZoom - cameraOffset.x;
+        let y = getEventLocation(e).y / cameraZoom - cameraOffset.y;
 
         city.push(new Hexagon(x, y, "purple"));
     })
