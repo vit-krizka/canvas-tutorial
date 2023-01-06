@@ -122,7 +122,7 @@ function axialRound(hex) {
 let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext('2d');
 
-function drawHexagon(hex, offset) {
+function drawHex(hex, offset) {
     ctx.fillStyle = hex.color;
     ctx.beginPath();
     for (let i = 0; i < 6; i++) {
@@ -133,27 +133,32 @@ function drawHexagon(hex, offset) {
     ctx.stroke();
 }
 
+function drawHexes(hexes, offset) {
+    for (let i = 0; i < hexes.length; i++) {
+        drawHex(hexes[i], offset);
+    }
+}
+
 function drawGrid(level, offset) {
     for (let q = -level; q < level; q++) {
         for (let r = -level; r < level; r++) {
             let hex = new Hex(q, r, "white");
 
             if (hex.distance < level) {
-                drawHexagon(hex, offset);
+                drawHex(hex, offset);
             }
         }
     }
 }
 
 // TESTOVÁNÍ
-let hex1 = new Hex(0, 3, "grey");
-let hex2 = new Hex(1, 0, "blue");
-let hex3 = new Hex(2, 0, "green");
-let hex4 = new Hex(-3, -1, "yellow");
+let hexes = [
+    new Hex(0, 3, "pink"),
+    new Hex(1, 0, "blue"),
+    new Hex(2, 0, "green"),
+    new Hex(-3, -1, "yellow"),
+    new Hex(-3, -1, "yellow")
+];
 
 drawGrid(5, 500);
-
-drawHexagon(hex1, 500);
-drawHexagon(hex2, 500);
-drawHexagon(hex3, 500);
-drawHexagon(hex4, 500);
+drawHexes(hexes, 500);
