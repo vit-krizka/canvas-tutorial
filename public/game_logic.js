@@ -44,17 +44,11 @@ class Hexagon {
 
 let mousePos = {x: 0, y: 0}
 
-const city = [];
-city.push(new Hexagon(0, 0, "red"));
-city.push(new Hexagon(1, 0, "blue"));
-city.push(new Hexagon(2, 0, "green"));
-city.push(new Hexagon(3, 0, "red"));
-city.push(new Hexagon(4, 0, "blue"));
-city.push(new Hexagon(5, 0, "green"));
+var gameBoard = new Map();
 
-function drawCity(city) {
-    for (let i = 0; i < city.length; i++) {
-        drawHexagon(city[i].x, city[i].y, city[i].color);
+function drawGameBoard() {
+    for (let [key, hex] of gameBoard) {
+        drawHexagon(hex.x, hex.y, hex.color);
     }
 }
 
@@ -81,7 +75,7 @@ function drawGrid(rect) {
     let minHex = pointToHexGrid(rect.min, true);
     let maxHex = pointToHexGrid(rect.max, true);
 
-    if (rect.max.x - rect.min.x > 5000 || rect.max.y - rect.min.y > 5000) {
+    if (rect.max.x - rect.min.x > 2500 || rect.max.y - rect.min.y > 2500) {
         drawRect(
             rect.min.x, rect.min.y, 
             rect.max.x - rect.min.x, 
@@ -107,7 +101,7 @@ function draw() {
 
     //samotné vykreslovní
     drawGrid(gameCanvas.getVisibleRect());
-    drawCity(city);
+    drawGameBoard();
 
     let currentHexagonCoord = pointToHexGrid(mousePos, false)
     let nearestHexagonCoord = pointToHexGrid(mousePos, true)
@@ -117,10 +111,48 @@ function draw() {
     requestAnimationFrame(draw)
 }
 
-gameCanvas.setClickCallback((pos, e) => {
-    console.log((pos, e))
-    city.push(new Hexagon(pos.x, pos.y, "purple"));
-    draw();
+function load() {
+    fetch('api/load/board').then(function(response) {
+        response.json().then(function(data) {
+            gameBoard = new Map(Object.entries(data))
+        });
+    });
+}
+
+function save() {
+    fetch('/api/save/board', {
+        method: "POST", 
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(Object.fromEntries(gameBoard))
+    })
+}
+
+load()
+var intervalId = setInterval(function() {
+    load()
+}, 1000);
+
+gameCanvas.setClickCallback((pos, e) => 
+{
+    hexPos = pointToHexGrid(pos, true)
+    let key = hexPos.row + "," + hexPos.col
+    
+    if (e.type == "mouseup") {
+        if (e.button == 0) {
+            const colors = ["purple", "blue", "pink", "yellow", "green", "cyan", "gray"]
+            let color = colors[Math.floor(Math.random() * colors.length)]
+            gameBoard.set(key, new Hexagon(hexPos.col, hexPos.row, color))
+        }
+        else if (e.button == 2) {
+            gameBoard.delete(key)
+        }
+
+        save()
+        draw()
+    }
+    
 })
 
 gameCanvas.setMoveCallback((pos, e) => {

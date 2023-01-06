@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+var bodyParser = require('body-parser')
 const redis = require("redis");
 
 // Constants
@@ -17,18 +18,18 @@ let redisClient;
 
 // App
 const app = express();
+var jsonParser = bodyParser.json()
 
 app.use('/', express.static('public'))
 
-// http://localhost/api/store/asdf?jkl=0
-app.get('/api/save/:key', async (req, res) => {
+app.post('/api/save/:key', jsonParser, async (req, res) => {
   const { key } = req.params;
-  const value = req.query;
-  await redisClient.set(key, JSON.stringify(value));
+  // const value = req.query;
+  console.log(req.body)
+  await redisClient.set(key, JSON.stringify(req.body));
   return res.send('Success');
 });
 
-// http://localhost/api/load/asdf
 app.get('/api/load/:key', async (req, res) => {
   const { key } = req.params;
   const rawData = await redisClient.get(key);
