@@ -1,2 +1,5 @@
 https://www.redblobgames.com/grids/hexagons/?fbclid=IwAR2De70oj6we7GlbAdcr8cv1u7GbVI1rQWP8PDDEMzcHKlM6VzneZtmatI0#hex-to-pixel
 https://codepen.io/chengarda/pen/wRxoyB
+
+
+https://www.redblobgames.com/grids/hexagons/codegen/output/lib-module.js

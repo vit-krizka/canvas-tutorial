@@ -1,3 +1,16 @@
+class Hex {
+    constructor(q, r, color) {
+        this.q = q;
+        this.r = r;
+        this.s = -q - r;
+
+        this.color = color;
+
+        this.x = hexToPixel({ q, r }).x;
+        this.y = hexToPixel({ q, r }).y;
+    }
+}
+
 const size = 10; //poloměr hexu v pixelech
 
 const height = Math.sqrt(3) * size; //výška hexu
@@ -37,13 +50,13 @@ function hexToPixel(hex) {
 }
 //vezme hex, např. {q: 0, r: 0} a vrátí jeho souřanice jako {x: 0, y: 0}
 
-function pixelToHex(center) {
-    var q = (2. / 3 * center.x) / size;
-    var r = (-1 / 3 * center.x + Math.sqrt(3) / 3 * center.y) / size;
+function pixelToHex(point) {
+    var q = (2. / 3 * point.x) / size;
+    var r = (-1 / 3 * point.x + Math.sqrt(3) / 3 * point.y) / size;
 
     return axialRound({ q: q, r: r });
 }
-//vezme souřadnice středu, např. {x: 0, y: 0} a vrátí souřadnice daného hexu, tj. {q: 0, r: 0}
+//vezme souřadnice středu, např. {x: 0, y: 0} a vrátí souřadnice (polohu) daného hexu, tj. {q: 0, r: 0}
 //funguje i pokud nezadáme souřadnice středu, ale jakéhokoli bodu (x, y), pak využije zaokrouhlení na nejbližší hex (axialRound)
 
 function cubeToAxial(cube) {
@@ -94,7 +107,7 @@ function axialRound(hex) {
 // console.log(hexToPixel({ q: 0, r: 2 }));
 // console.log(hexToPixel({ q: 0, r: 3 }));
 
-// console.log(pixelToHex({ x: 0, y: 0 }));
+//console.log(pixelToHex({ x: 0, y: 0 }));
 // console.log(pixelToHex({ x: 3, y: 4 }));
 // console.log(pixelToHex({ x: 5, y: 17.32050807568877 }));
 // console.log(pixelToHex({ x: 3, y: 15 }));
@@ -102,3 +115,11 @@ function axialRound(hex) {
 // console.log(pixelToHex({ x: 7, y: 32 }));
 // console.log(pixelToHex({ x: -3, y: 51.96152422706632 }));
 // console.log(pixelToHex({ x: 3, y: 48 }));
+
+let rudyHex = new Hex(1, 2, "green");
+console.log(rudyHex.q);
+console.log(rudyHex.r);
+console.log(rudyHex.s);
+console.log(rudyHex.color);
+console.log(rudyHex.x);
+console.log(rudyHex.y);
