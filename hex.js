@@ -1,17 +1,30 @@
+const size = 50; //poloměr hexu v pixelech
+
+class Point {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
 class Hex {
-    constructor(q, r, color) {
+    constructor(q, r, color = "black") {
         this.q = q;
         this.r = r;
         this.s = -q - r;
 
         this.color = color;
+        this.size = size;
 
         this.x = hexToPixel({ q, r }).x;
         this.y = hexToPixel({ q, r }).y;
+        this.center = new Point(this.x, this.y);
+
+        this.corners = hexCorners({ x: this.x, y: this.y }, size);
+
+        this.distance = Math.max(Math.abs(q), Math.abs(r), Math.abs(this.s));
     }
 }
-
-const size = 10; //poloměr hexu v pixelech
 
 const height = Math.sqrt(3) * size; //výška hexu
 const width = 2 * size; //šířka hexu
@@ -23,9 +36,10 @@ function hexCorner(center, size, i) {
     let angle_deg = 60 * i;
     let angle_rad = Math.PI / 180 * angle_deg;
 
-    return { x: center.x + size * Math.cos(angle_rad), y: center.y + size * Math.sin(angle_rad) }
+    return new Point(center.x + size * Math.cos(angle_rad), center.y + size * Math.sin(angle_rad));
 }
 //vezme střed (v pixelech, např. {0,0}), velikost (size) a pořadí vrcholu (0 až 5) a vrátí souřadnice daného vrcholu
+//pomocná funkce pro hexCorners()
 
 function hexCorners(center, size) {
     let output = [];
@@ -46,7 +60,7 @@ function hexToPixel(hex) {
     let x = size * (3 / 2 * hex.q);
     let y = size * ((Math.sqrt(3) / 2 * hex.q) + (Math.sqrt(3) * hex.r));
 
-    return { x: x, y: y };
+    return new Point(x, y);
 }
 //vezme hex, např. {q: 0, r: 0} a vrátí jeho souřanice jako {x: 0, y: 0}
 
@@ -56,7 +70,7 @@ function pixelToHex(point) {
 
     return axialRound({ q: q, r: r });
 }
-//vezme souřadnice středu, např. {x: 0, y: 0} a vrátí souřadnice (polohu) daného hexu, tj. {q: 0, r: 0}
+//vezme souřadnice středu, např. {x: 0, y: 0} a vrátí souřadnice (polohu) daného hexu, tj. objekt {q: 0, r: 0}, nikoli Hex
 //funguje i pokud nezadáme souřadnice středu, ale jakéhokoli bodu (x, y), pak využije zaokrouhlení na nejbližší hex (axialRound)
 
 function cubeToAxial(cube) {
@@ -101,25 +115,45 @@ function axialRound(hex) {
 //zaokrouhlování na nejbližší hex
 
 
-//TESTOVÁNÍ
-// console.log(hexToPixel({ q: 0, r: 0 }));
-// console.log(hexToPixel({ q: 0, r: 1 }));
-// console.log(hexToPixel({ q: 0, r: 2 }));
-// console.log(hexToPixel({ q: 0, r: 3 }));
 
-//console.log(pixelToHex({ x: 0, y: 0 }));
-// console.log(pixelToHex({ x: 3, y: 4 }));
-// console.log(pixelToHex({ x: 5, y: 17.32050807568877 }));
-// console.log(pixelToHex({ x: 3, y: 15 }));
-// console.log(pixelToHex({ x: 6, y: 34.64101615137754 }));
-// console.log(pixelToHex({ x: 7, y: 32 }));
-// console.log(pixelToHex({ x: -3, y: 51.96152422706632 }));
-// console.log(pixelToHex({ x: 3, y: 48 }));
+//KRESLENÍ
 
-let rudyHex = new Hex(1, 2, "green");
-console.log(rudyHex.q);
-console.log(rudyHex.r);
-console.log(rudyHex.s);
-console.log(rudyHex.color);
-console.log(rudyHex.x);
-console.log(rudyHex.y);
+/** @type {HTMLCanvasElement} */
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext('2d');
+
+function drawHexagon(hex, offset) {
+    ctx.fillStyle = hex.color;
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+        ctx.lineTo(hex.corners[i].x + offset, hex.corners[i].y + offset);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+}
+
+function drawGrid(level, offset) {
+    for (let q = -level; q < level; q++) {
+        for (let r = -level; r < level; r++) {
+            let hex = new Hex(q, r, "white");
+
+            if (hex.distance < level) {
+                drawHexagon(hex, offset);
+            }
+        }
+    }
+}
+
+// TESTOVÁNÍ
+let hex1 = new Hex(0, 3, "grey");
+let hex2 = new Hex(1, 0, "blue");
+let hex3 = new Hex(2, 0, "green");
+let hex4 = new Hex(-3, -1, "yellow");
+
+drawGrid(5, 500);
+
+drawHexagon(hex1, 500);
+drawHexagon(hex2, 500);
+drawHexagon(hex3, 500);
+drawHexagon(hex4, 500);
