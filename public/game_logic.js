@@ -42,7 +42,7 @@ class Hexagon {
     }
 }
 
-let mousePos = {x: 0, y: 0}
+let mousePos = null
 
 var gameBoard = new Map();
 
@@ -103,10 +103,12 @@ function draw() {
     drawGrid(gameCanvas.getVisibleRect());
     drawGameBoard();
 
-    let currentHexagonCoord = pointToHexGrid(mousePos, false)
-    let nearestHexagonCoord = pointToHexGrid(mousePos, true)
-    drawHexagon(currentHexagonCoord.col, currentHexagonCoord.row, "rgba(127,127,255,0.5)")
-    drawHexagon(nearestHexagonCoord.col, nearestHexagonCoord.row, "rgba(127,127,255,0.5)")
+    if (mousePos) {
+        let currentHexagonCoord = pointToHexGrid(mousePos, false)
+        let nearestHexagonCoord = pointToHexGrid(mousePos, true)
+        drawHexagon(currentHexagonCoord.col, currentHexagonCoord.row, "rgba(255,255,255,0.0)")
+        drawHexagon(nearestHexagonCoord.col, nearestHexagonCoord.row, "rgba(127,127,255,0.3)")
+    }
 
     requestAnimationFrame(draw)
 }
