@@ -14,11 +14,8 @@ if (canvas.getContext) {
     let offsetX = 0;
     let offsetY = 0;
 
-    //původné parametry Hexagonu
     const a = 2 * Math.PI / 6;
     const r = 50;
-
-    //nové parametry Hexu
 
     class Hexagon {
         constructor(x, y, color) {
@@ -39,8 +36,8 @@ if (canvas.getContext) {
 
     //drawHexagon se musí předělat tak, aby kreslila hexagony podle souřadnic gridu (střed je 0,0)
     function drawHexagon(x, y, color = "rgb(255, 255, 255)") {
-        x += offsetX;
-        y += offsetY;
+        // x += offsetX;
+        // y += offsetY;
 
         ctx.fillStyle = color;
         ctx.beginPath();
@@ -175,6 +172,7 @@ if (canvas.getContext) {
     canvas.addEventListener("contextmenu", (e) => {
         e.preventDefault();
 
+        //nefunguej dobře
         let x = getEventLocation(e).x / cameraZoom - cameraOffset.x;
         let y = getEventLocation(e).y / cameraZoom - cameraOffset.y;
 
