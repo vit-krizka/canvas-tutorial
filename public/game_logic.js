@@ -5,16 +5,18 @@ const hexSize = 50;
 
 function drawHexagon(col, row, color = "rgb(255, 255, 255)", text = null) {
     ctx.fillStyle = color;
+    ctx.strokeStyle = "black";
     ctx.beginPath();
     let pt = flat_hex_to_pixel(oddq_to_axial({col: col, row: row}), hexSize)
     for (var i = 0; i < 6; i++) {
         ctx.lineTo(
-            (pt.x + getHexVertexOffset(i).x * hexSize), 
-            (pt.y + getHexVertexOffset(i).y * hexSize)
+            Math.round(pt.x + getHexVertexOffset(i).x * hexSize), 
+            Math.round(pt.y + getHexVertexOffset(i).y * hexSize)
         )
     }
     ctx.closePath();
     ctx.fill();
+    ctx.stroke();
     if (text) {
         ctx.fillStyle = "black";
         ctx.textBaseline = 'middle';
@@ -22,8 +24,6 @@ function drawHexagon(col, row, color = "rgb(255, 255, 255)", text = null) {
         ctx.font = "1em Arial";
         ctx.fillText(text, pt.x, pt.y);
     }
-    ctx.strokeStyle = "black";
-    ctx.stroke();
 }
 
 function pointToHexGrid(point, round) {
